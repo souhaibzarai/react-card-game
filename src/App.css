@@ -123,3 +123,18 @@
 .card.matched>.card-back {
   display: flex;
 }
+
+.btn {
+  background: linear-gradient(#a3b7e2ba, #a5afaf);
+  outline: unset;
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  width: fit-content;
+  margin: 20px auto 0;
+  border-radius: 12px;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
