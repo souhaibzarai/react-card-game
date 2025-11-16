@@ -15,6 +15,7 @@
   align-content: center;
   justify-content: center;
   gap: 20px;
+  padding: 20px;
 }
 
 .game-box {
@@ -25,10 +26,11 @@
 }
 
 .header {
-  margin: auto;
-  padding: 10px 30px;
+  width: 100%;
   display: grid;
   align-content: center;
+  margin: auto;
+  padding: 10px 30px;
   text-align: center;
 }
 
@@ -55,14 +57,39 @@
   font-weight: bold;
 }
 
-.congrats {
-  color: rgba(58, 194, 58, 0.615);
+.win-message {
+  padding: 10px 25px;
+  text-align: center;
+  line-height: 1.5;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(20px);
+  z-index: 2;
+  transition: .5s ease-in-out;
+  border: unset;
+}
+
+.win-message h2 {
+  font-size: 16px;
+  color: antiquewhite;
+}
+
+.win-message p {
+  font-size: 13px;
+  color: #a3b7e2ba;
+}
+
+.win-message p span {
+  color: #0f0;
 }
 
 .board {
   display: grid;
   grid-template-columns: repeat(4, 25%);
   perspective: 1000px;
+  border: .5px solid #4f74c422;
 }
 
 .card {
@@ -85,7 +112,7 @@
 
 .card.matched {
   background-color: #4fc47752;
-  border: 1.2px solid #4fc47752;
+  border: 1.2px solid rgba(0, 255, 0, 0.571);
   box-shadow: 0 0 1px rgba(79, 196, 119, 0.1);
 }
 
