@@ -1,7 +1,7 @@
 import React from 'react'
 
-const Header = ({ moves, score }) => {
-  const congratulations = score === 8 && moves < 18;
+const Header = ({ moves, score, onReset }) => {
+  const congratulations = score === 8 && moves <= 10;
   return (
     <div className='game-box header'>
       {congratulations && <div className='congrats'>You've Got Perfect Score</div>}
@@ -14,6 +14,7 @@ const Header = ({ moves, score }) => {
           Moves: <span>{moves}</span>
         </p>
       </div>
+      <button onClick={onReset} className='btn'>New Game</button>
     </div>
   );
 }
