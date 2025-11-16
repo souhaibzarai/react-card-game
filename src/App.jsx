@@ -2,61 +2,59 @@ import Header from './components/Header'
 import './App.css'
 import { useState } from 'react'
 import GameCard from './components/GameCard';
+import { initialGameCards } from './data/data'
 
-const initialGameCards = [
-  '🍍',
-  '🍈',
-  '🍉',
-  '🍋‍🟩',
-  '🍌',
-  '🍊',
-  '🍋‍🟩',
-  '🍍',
-  '🍇',
-  '🍌',
-  '🍈',
-  '🍇',
-  '🍋',
-  '🍊',
-  '🍉',
-  '🍋',
-];
+const shuffledArray = (array) => {
+  const shuffled = [...array];
+  for (let i = 0; i < array.length; i++) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled;
+}
+
 
 const App = () => {
-  // // eslint-disable-next-line
-  const [cards, setCards] = useState(initialGameCards.map((card, index) => {
+  const generateCards = () => shuffledArray(initialGameCards).map((value, index) => {
     return {
       id: index,
-      value: card,
+      value,
       isFlipped: false,
       isMatched: false,
     };
-  }));
+  });
+  const [cards, setCards] = useState(generateCards);
   const [moves, setMoves] = useState(0);
   const [score, setScore] = useState(null);
   const [flippedCardsId, setFlippedCardsId] = useState([]);
+  const [isLocked, setIsLocked] = useState(false);
+
+  const initializeGame = () => {
+    setCards(generateCards);
+    setIsLocked(false);
+    setMoves(0);
+    setScore(null);
+    setFlippedCardsId([]);
+  }
 
   const handleCardClick = (card) => {
-    if (card.isFlipped || card.isMatched) return;
-    setMoves(prev => prev + 1);
-    const newCards = cards.map((c) => {
+    if (card.isFlipped || card.isMatched || isLocked) return;
+    setCards(prev => prev.map((c) => {
       if (c.id === card.id) {
         return { ...c, isFlipped: true }
       } else {
         return c;
       }
-    });
-    setCards(newCards);
+    }));
 
     const newFlippedCardsId = [...flippedCardsId, card.id]
     setFlippedCardsId(newFlippedCardsId);
 
     if (flippedCardsId.length === 1) {
-      const firstCard = cards[flippedCardsId];
+      setIsLocked(true);
+      const firstCard = cards[flippedCardsId[0]];
       if (firstCard.value === card.value) {
         setTimeout(() => {
-          setScore(prev => prev + 1);
-
           setCards(prev => prev.map(c => {
             if (firstCard.id === c.id || card.id === c.id) {
               return { ...c, isMatched: true };
@@ -65,31 +63,29 @@ const App = () => {
               return c;
             }
           }));
-          
+          setScore(s => s + 1);
           setFlippedCardsId([]);
+          setIsLocked(false);
         }, 400);
       } else {
-        const flippedBackCards = newCards.map(c => {
-          if (newFlippedCardsId.includes(c.id) || card.id === c.id) {
-            return { ...c, isFlipped: false }
-          }
-          else {
-            return c;
-          }
-        });
         setTimeout(() => {
-          setCards(flippedBackCards);
+          setCards(
+            prev => prev.map(c => newFlippedCardsId.includes(c.id) ?
+              { ...c, isFlipped: false } : c
+            )
+          );
           setFlippedCardsId([]);
-        }, 700);
+          setIsLocked(false);
+        }, 800);
       }
-
+      setMoves(m => m + 1);
     }
 
   }
 
   return (
     <div className="game-dashboard">
-      <Header moves={moves} score={score} />
+      <Header moves={moves} score={score} onReset={initializeGame} />
       <div className="board">
         {cards.map((card) => {
           return <GameCard key={card.id} card={card} onClick={handleCardClick} />;
